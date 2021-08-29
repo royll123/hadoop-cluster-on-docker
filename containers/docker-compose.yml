@@ -1,0 +1,40 @@
+version: '3'
+services:
+    hdfs-namenode:
+        build: ./hdfs-namenode
+        image: hadoop-hdfs-namenode
+        container_name: hdfs-namenode
+        networks:
+            - hadoop
+        ports:
+            - 127.0.0.1:9870:9870
+    yarn-resourcemanager:
+        build: ./yarn-resourcemanager
+        image: hadoop-yarn-resourcemanager
+        container_name: yarn-resourcemanager
+        networks:
+            - hadoop
+        ports:
+            - 127.0.0.1:8088:8088
+    hadoop-worker:
+        build: ./worker
+        image: hadoop-worker
+        networks:
+            - hadoop
+        ports:
+            - 127.0.0.1::9864
+            - 127.0.0.1::8042
+        depends_on:
+            - hdfs-namenode
+            - yarn-resourcemanager
+
+    mapred-historyserver:
+        build: ./mapred-historyserver
+        image: hadoop-mapred-historyserver
+        container_name: mapred-historyserver
+        networks:
+            - hadoop
+        ports:
+            - 127.0.0.1:19888:19888
+networks:
+    hadoop:
